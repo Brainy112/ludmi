@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Feliz Cumpleaños!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: popIn 1.2s ease-out;
+    }
+    p {
+      font-size: 1.2rem;
+      color: #ffffff;
+      max-width: 90vw;
+      margin-top: 1rem;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .balloons {
+      position: absolute;
+      bottom: -100px;
+      display: flex;
+      gap: 20px;
+      animation: riseUp 10s infinite linear;
+    }
+    .balloon {
+      width: 60px;
+      height: 80px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      background-color: #AFEEEE;
+      position: relative;
+      animation: float 4s ease-in-out infinite;
+      box-shadow: inset -5px -5px 10px rgba(255,255,255,0.3), inset 5px 5px 10px rgba(0,0,0,0.2);
+    }
+    .balloon:nth-child(2) { background-color: #ff9671; animation-delay: 1s; }
+    .balloon:nth-child(3) { background-color: #00ACE3; animation-delay: 2s; }
+    .balloon:nth-child(4) { background-color: #f9f871; animation-delay: 3s; }
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      width: 3px;
+      height: 30px;
+      background-color: #333;
+      transform: translateX(-50%);
+    }
+    .cake {
+      margin-top: 2rem;
+      animation: fadeIn 3s ease-in-out;
+    }
+    .cake img {
+      width: 200px;
+      max-width: 100%;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .cake img:hover {
+      transform: scale(1.05) rotate(5deg);
+      filter: brightness(1.1);
+    }
+    .confetti {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .confetti span {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: hsl(calc(360 * var(--x)), 100%, 70%);
+      opacity: 0.8;
+      animation: fall 5s infinite;
+    }
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: white;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      opacity: 0.8;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+    .surprise-btn {
+      margin-top: 2rem;
+      padding: 0.5rem 1rem;
+      background-color: #ff6f91;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+    .surprise-btn:hover {
+      background-color: #ff4f71;
+      transform: scale(1.05);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes scaleIn {
+  	0% { transform: scale(0.7); opacity: 0; }
+  	100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-content {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 1.5rem;
+      max-width: 90vw;
+      width: 360px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+      font-size: 1.1rem;
+      position: relative;
+      animation: scaleIn 0.5s ease-out;
+      border: 4px solid #ff6f91;
+    }
+    .modal-content h2 {
+      font-family: 'Pacifico', cursive;
+      color: #ff6f91;
+      margin-bottom: 1rem;
+    }
+    .modal-content p { color: #444; }
+    .close-btn {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      font-size: 2rem;
+      background-color: #ff6f91;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
+    }
+    .close-btn:hover { background-color: #ff4f71; }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 0.2; transform: scale(0.6); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes riseUp {
+      0% { bottom: -100px; }
+      100% { bottom: 110%; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes fall {
+      0% { top: -10px; left: calc(100% * var(--x)); opacity: 1; }
+      100% { top: 100%; transform: rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="titulo"></h1>
+  <p></p>
+  <div class="cake">
+    <img src="https://i.postimg.cc/W10wz6Zm/pastel-hd.png" alt="Pastel de cumpleaños bonito" onclick="mostrarMensaje()">
+  </div>
+  <button class="surprise-btn" onclick="reiniciarAnimacion()">¡Otra vez!</button>
+  <div class="balloons">
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+  <div class="stars">
+    <div class="star" style="top:10%;left:20%"></div>
+    <div class="star" style="top:30%;left:50%"></div>
+    <div class="star" style="top:70%;left:70%"></div>
+    <div class="star" style="top:40%;left:80%"></div>
+    <div class="star" style="top:60%;left:10%"></div>
+  </div>
+  <div class="modal" id="mensajeModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="cerrarModal()">&times;</button>
+      <h2>🎉 ¡Sorpresa! 🎉</h2>
+      <p>¡Espero que hoy sea un desmadre de los buenos! 🥳 Lleno de alegría, amor y que te comas hasta el último pedacito de pastel 🎂 sin culpa. ¡A celebrar con todo! ¡Disfruta a mil! ✨</p>
+    </div>
+  </div>
+  <script>
+    function getNombreDesdeURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("nombre") || "Lilys";
+    }
+
+    function mostrarMensaje() {
+      document.getElementById('mensajeModal').style.display = 'flex';
+    }
+    function cerrarModal() {
+      document.getElementById('mensajeModal').style.display = 'none';
+    }
+    function reiniciarAnimacion() {
+      const container = document.getElementById("confetti");
+      container.innerHTML = "";
+      for (let i = 0; i < 100; i++) {
+        const span = document.createElement('span');
+        const x = Math.random();
+        span.style.setProperty('--x', x);
+        span.style.left = `${x * 100}%`;
+        span.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(span);
+      }
+    }
+
+    document.getElementById("titulo").textContent = `¡Feliz Cumpleaños ${getNombreDesdeURL()}!`;
+    reiniciarAnimacion();
+  </script>
+</body>
+</html>
+
